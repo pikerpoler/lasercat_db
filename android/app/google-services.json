@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "129259414031",
+    "project_id": "laser-cat-db",
+    "storage_bucket": "laser-cat-db.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:129259414031:android:0f9c729708350f9fb4b97a",
+        "android_client_info": {
+          "package_name": "com.nadavn.lasercat_db"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "129259414031-imcvo4g6ss7lbd482e0ariqfud3dvrqi.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJICx8uTNF90T7ICYDf1EQlzi8C61RCjA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "129259414031-imcvo4g6ss7lbd482e0ariqfud3dvrqi.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
