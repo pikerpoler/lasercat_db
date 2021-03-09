@@ -8,7 +8,7 @@ Future sleep1() {
 
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-int MAX_ITERATIONS = 20;
+int MAX_ITERATIONS = 50;
 String DEVICE_NAME = "prototype";
 DocumentReference docRef = FirebaseFirestore.instance.collection("users").doc(DEVICE_NAME);
 

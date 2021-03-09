@@ -35,7 +35,6 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
 
   @override
   void initState(){
-
     // initialized for widget
     _animationController = AnimationController(
       vsync: this,
@@ -63,13 +62,12 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
   void cameraHandler(bool isOn)async{
     if (isOn){
       //turnOf
-
-      sendMessage("OFFER", 'dummy_offer', _playTime);
-      Message message = await reciveMessage();
-      print("message type is");
-      print(message.message_type);
-      print("message is");
-      print(message.message);
+      // sendMessage("OFFER", 'dummy_offer', _playTime);
+      // Message message = await reciveMessage();
+      // print("message type is");
+      // print(message.message_type);
+      // print("message is");
+      // print(message.message);
     }else{
       // _createOffer();
     }

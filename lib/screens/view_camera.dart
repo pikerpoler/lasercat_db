@@ -17,9 +17,9 @@ class camera_widget extends StatefulWidget {
 
 class _camera_widgetState extends State<camera_widget> {
 
+  var _my_candidate;
   bool _offer = false;
   RTCPeerConnection _peerConnection;
-  var _my_candidate;
   MediaStream _localStream;
   RTCVideoRenderer _localRenderer = new RTCVideoRenderer();
   RTCVideoRenderer _remoteRenderer = new RTCVideoRenderer();
@@ -36,12 +36,13 @@ class _camera_widgetState extends State<camera_widget> {
 
   @override
   void initState() {
+    print("init state");
     initRenderers();
     _createPeerConnection().then((pc) {
       _peerConnection = pc;
     });
 
-    _connect_with_messegas();
+    //connect_with_messegas();
     super.initState();
   }
 
@@ -50,19 +51,52 @@ class _camera_widgetState extends State<camera_widget> {
     await _remoteRenderer.initialize();
   }
 
-  void _connect_with_messegas()async{
+  void connect_with_messegas() async{
+    // await _createPeerConnection().then((pc) {
+    //   _peerConnection = pc;
+    // });
+    print("pc = ");
+    print(_peerConnection);
+    print("connecting with messages");
     RTCSessionDescription description =
     await _peerConnection.createOffer({'offerToReceiveVideo': 1});
-    _peerConnection.setLocalDescription(description);
+    print("created offer, description =");
+    print(description.sdp);
+
+    print("set local desc");
     var session = parse(description.sdp).toString();
-    sendMessage("OFFER", session, 10);
+    print("session =");
+    print(session);
+    print("json session =");
+    print(json.encode(session));
+    _peerConnection.setLocalDescription(description);
+
+    sendMessage("OFFER", description.sdp, 10);
     Message answer = await reciveMessage();
     if(answer.message_type != "ANSWER"){
       print("ERROR: message_type != ANSWER");
       return;
     }
+    print("answer is:");
+    dynamic sdp = answer.message;
+    print(sdp);
 
+
+    // RTCSessionDescription description =
+    //     new RTCSessionDescription(session['sdp'], session['type']);
+    RTCSessionDescription in_description =
+    new RTCSessionDescription(sdp, 'answer');
+    print(in_description.toMap());
+
+    await _peerConnection.setRemoteDescription(in_description);
+    print("should work now");
   }
+
+  void _print_pressed() async{
+    connect_with_messegas();
+    print("pressed");
+  }
+
   void _createOffer() async {
     RTCSessionDescription description =
     await _peerConnection.createOffer({'offerToReceiveVideo': 1});
@@ -117,9 +151,11 @@ class _camera_widgetState extends State<camera_widget> {
   }
 
   _createPeerConnection() async {
+    print("creating peer connections");
     Map<String, dynamic> configuration = {
       "iceServers": [
-        {"url": "stun:stun.l.google.com:19302"},
+        //{"url": "stun:stun.l.google.com:19302"},
+        {"url": "stun:eu-turn3.xirsys.com"},
       ]
     };
 
@@ -134,16 +170,16 @@ class _camera_widgetState extends State<camera_widget> {
     _localStream = await _getUserMedia();
 
     RTCPeerConnection pc = await createPeerConnection(configuration, offerSdpConstraints);
-    // if (pc != null) print(pc);
+    if (pc != null) print(pc);
     pc.addStream(_localStream);
 
     pc.onIceCandidate = (e) {
       if (e.candidate != null) {
-        _my_candidate = {
+        _my_candidate =json.encode({
           'candidate': e.candidate.toString(),
           'sdpMid': e.sdpMid.toString(),
           'sdpMlineIndex': e.sdpMlineIndex,
-        };
+        });
 
 
         print(json.encode({ // TODO remove
@@ -178,7 +214,7 @@ class _camera_widgetState extends State<camera_widget> {
 
     // _localStream = stream;
     _localRenderer.srcObject = stream;
-
+    // _localRenderer.mirror = true;
 
     // _peerConnection.addStream(stream);
 
@@ -217,12 +253,12 @@ class _camera_widgetState extends State<camera_widget> {
           //         );
           //       });
           // },
-          onPressed: _createOffer,
+          onPressed: _print_pressed, // _createOffer,
           child: Text('Offer'),
           color: Colors.amber,
         ),
         RaisedButton(
-          onPressed: _createAnswer,
+          onPressed: _createOffer,
           child: Text('Answer'),
           color: Colors.amber,
         ),
@@ -258,9 +294,14 @@ class _camera_widgetState extends State<camera_widget> {
         body: Container(
             child: Column(children: [
               videoRenderers(),
-              //offerAndAnswerButtons(),
+              offerAndAnswerButtons(),
               //sdpCandidatesTF(),
               //sdpCandidateButtons(),
             ])));
   }
+}
+
+int connect(){
+
+  return 1;
 }
