@@ -1,6 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.nadavn.lasercat_db">
-   <application
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <application
         android:label="lasercat_db"
         android:icon="@mipmap/ic_launcher">
         <activity
@@ -38,4 +40,5 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
 </manifest>

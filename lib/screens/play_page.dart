@@ -14,6 +14,7 @@ import 'package:lasercat_db/screens/view_camera.dart';
 import 'package:lasercat_db/services/messeges.dart';
 
 
+
 class CameraPage extends StatefulWidget {
   CameraPage({Key key}) : super(key: key);
 
@@ -33,8 +34,11 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
   int _playTime = 10;
 
 
+
+
   @override
   void initState(){
+
     // initialized for widget
     _animationController = AnimationController(
       vsync: this,
@@ -57,17 +61,19 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
     // });
 
     super.initState();
+
   }
 
-  void cameraHandler(bool isOn)async{
+
+  void cameraHandler(bool isOn)async {
     if (isOn){
       //turnOf
-      // sendMessage("OFFER", 'dummy_offer', _playTime);
-      // Message message = await reciveMessage();
-      // print("message type is");
-      // print(message.message_type);
-      // print("message is");
-      // print(message.message);
+      sendMessage("OFFER", 'dummy_offer', _playTime);
+      Message message = await reciveMessage();
+      print("message type is");
+      print(message.message_type);
+      print("message is");
+      print(message.message);
     }else{
       // _createOffer();
     }
@@ -189,6 +195,7 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
   }
 
 
+
   GlobalKey key = GlobalKey();
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
@@ -227,11 +234,11 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
         body: Center(
           child: Column(
             children: <Widget>[
-              Expanded(
-                child: Container(
-                  child: camera_widget()// videoRenderers(), CallSample() //
-                ),
-              ),
+              // Expanded(
+              //   child: Container(
+              //     child: camera_widget()// videoRenderers(), CallSample() //
+              //   ),
+              // ),
               ToggleButtons(
                 key: key,
                 children: <Widget>[
