@@ -9,8 +9,9 @@ Future sleep1() {
 FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 int MAX_ITERATIONS = 50;
-String DEVICE_NAME = "prototype";
+String DEVICE_NAME = "";
 DocumentReference docRef = FirebaseFirestore.instance.collection("users").doc(DEVICE_NAME);
+
 
 class Message{
   String message_type;
@@ -19,7 +20,37 @@ class Message{
   Message({this.message_type, this.message, this.play_time});
 }
 
+Future <void> setDeviceName(String uid,String device_name, ){
+  FirebaseFirestore.instance.collection("uid to device name").doc(uid)
+      .set({"device name": device_name})
+      .catchError((error) => print("Failed to add user: $error"));
+}
+
+Future <void> getDeviceName(String uid)async{
+  if (uid == ''){
+    print("no user found. setting device to None");
+    DEVICE_NAME = '';
+    return;
+  }
+  DEVICE_NAME = (await FirebaseFirestore.instance.collection("uid to device name").doc(uid).get()).data()["device name"];
+  print("setting device name to $DEVICE_NAME");
+}
+
+Future <String> getIP()async{
+  if(DEVICE_NAME == ''){
+    print("no device found");
+    //return Message();
+  }
+  var docsnap = await docRef.get();
+  var data = docsnap.data();
+  return data["ip"];
+}
+
 void sendMessage(String message_type, String message, int play_time ) async {
+  if(DEVICE_NAME == ''){
+    print("no device found");
+    return;
+  }
   for (int i = 0; i < MAX_ITERATIONS; i++) {
     var docsnap = await docRef.get();
     var data = docsnap.data();
@@ -41,6 +72,10 @@ void sendMessage(String message_type, String message, int play_time ) async {
 }
 
 Future<Message> reciveMessage()async{
+  if(DEVICE_NAME == ''){
+    print("no device found");
+    //return Message();
+  }
   for (int i = 0; i < MAX_ITERATIONS; i++) {
     var docsnap = await docRef.get();
     var data = docsnap.data();

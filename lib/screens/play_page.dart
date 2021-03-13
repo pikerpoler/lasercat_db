@@ -10,8 +10,10 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:floating_action_bubble/floating_action_bubble.dart';
 import 'package:lasercat_db/models/user.dart';
 import 'package:lasercat_db/screens/view_camera.dart';
+import 'package:lasercat_db/services/auth.dart';
 
 import 'package:lasercat_db/services/messeges.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 
 
@@ -29,12 +31,11 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
   // initialized for widget
   Animation<double> _animation;
   AnimationController _animationController;
-  List<bool> isSelected = [false, false, true, false, false];
+  List<bool> isSelected = [false, false, false, false, false];
   String _playShape = RANDOM;
   int _playTime = 10;
-
-
-
+  String ip;
+  String url=null;
 
   @override
   void initState(){
@@ -65,18 +66,11 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
   }
 
 
-  void cameraHandler(bool isOn)async {
-    if (isOn){
-      //turnOf
-      sendMessage("OFFER", 'dummy_offer', _playTime);
-      Message message = await reciveMessage();
-      print("message type is");
-      print(message.message_type);
-      print("message is");
-      print(message.message);
-    }else{
-      // _createOffer();
-    }
+  void cameraHandler()async {
+    ip=await getIP();
+    setState(() {
+      url="http://"+ip+":8080";
+    });
   }
 
 
@@ -229,16 +223,42 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
       key: _scaffoldKey,
         appBar: AppBar(
           title: Text("Laser Cat"),
+          actions: <Widget>[
+            FlatButton.icon(
+              icon: Icon(Icons.person),
+              label: Text('sign out'),
+              onPressed: () async {
+                await AuthService().signOut();
+              },
+            ),
+          ],
         ),
-
         body: Center(
           child: Column(
             children: <Widget>[
-              // Expanded(
-              //   child: Container(
-              //     child: camera_widget()// videoRenderers(), CallSample() //
-              //   ),
-              // ),
+              url == null
+                  ? Expanded(
+                child: Center(
+                  child: RichText(
+                    text: TextSpan(children: [
+                      TextSpan(
+                        text: 'Camera Closed',
+                        style: TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            background: Paint()..color = Colors.red),
+                      )
+                    ]),
+                  ),
+                ),
+              )
+              :new Expanded(
+                child: Container(
+                  child: WebView(initialUrl: url,
+                  ) //camera_widget()// videoRenderers(), CallSample() //
+                ),
+              ),
               ToggleButtons(
                 key: key,
                 children: <Widget>[
@@ -254,8 +274,10 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
                   if (index == 0) TimeHandler();
                   else if (index == 1) shapeHandler();
                   else if (index == 2) {
-                    isSelected[index] = !isSelected[index];
-                    cameraHandler(isSelected[index]);
+                    if(!isSelected[index]) {
+                      isSelected[index]=true;
+                      cameraHandler();
+                    }
                   }
                   else if (index == 3) {
                     if (isSelected[index] && _playTime !=D_TIME){//if we are on timed and the button is pushed
@@ -275,7 +297,6 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
                       if (_playTime==D_TIME) _scaffoldKey.currentState.showSnackBar(snackBar);
                       else _scaffoldKey.currentState.showSnackBar(snackBar2);
                     }
-
                   }
                 },
                 isSelected: isSelected,

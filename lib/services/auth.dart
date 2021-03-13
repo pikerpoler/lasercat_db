@@ -12,6 +12,9 @@ class AuthService {
     return user != null ? CatUser(uid: user.uid) : null;
   }
 
+  CatUser getCurrentUser(){
+    return _userFromFirebaseUser(_auth.currentUser);
+  }
 
   // auth change user stream
   Stream<CatUser> get user {

@@ -2,6 +2,7 @@ import 'package:lasercat_db/services/auth.dart';
 import 'package:lasercat_db/shared/constants.dart';
 import 'package:lasercat_db/shared/loading.dart';
 import 'package:flutter/material.dart';
+import 'package:lasercat_db/services/messeges.dart';
 
 class Register extends StatefulWidget {
 
@@ -22,15 +23,18 @@ class _RegisterState extends State<Register> {
   // text field state
   String email = '';
   String password = '';
+  String device_name ='';
 
   @override
   Widget build(BuildContext context) {
-    return loading ? Loading() : Scaffold(
+    return loading ? Loading() : WillPopScope(
+      onWillPop: _onBackPressed,
+      child:new Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       appBar: AppBar(
         backgroundColor: Colors.lightBlueAccent,
         elevation: 0.0,
-        title: Text('Sign up to Brew Crew'),
+        title: Text('Sign up to Laser Cat'),
         actions: <Widget>[
           FlatButton.icon(
             icon: Icon(Icons.person),
@@ -63,8 +67,17 @@ class _RegisterState extends State<Register> {
                 },
               ),
               SizedBox(height: 20.0),
+              TextFormField(
+                decoration: textInputDecoration.copyWith(hintText: 'device name'),
+                obscureText: false,
+                validator: (val) => val.length !=9 ? 'devices name appears on your lasercat console' : null,
+                onChanged: (val) {
+                  setState(() => device_name = val);
+                },
+              ),
+              SizedBox(height: 20.0),
               RaisedButton(
-                  color: Colors.pink[400],
+                  color: Colors.lightBlue,
                   child: Text(
                     'Register',
                     style: TextStyle(color: Colors.white),
@@ -77,12 +90,13 @@ class _RegisterState extends State<Register> {
                       print("password:");
                       print(password);
                       dynamic result = await _auth.registerWithEmailAndPassword(email, password);
-
                       if(result == null) {
                         setState(() {
                           loading = false;
                           error = 'Please supply a valid email';
                         });
+                      }else{
+                        setDeviceName(_auth.getCurrentUser().uid,device_name);
                       }
                     }
                   }
@@ -96,6 +110,9 @@ class _RegisterState extends State<Register> {
           ),
         ),
       ),
-    );
+    ));
+  }
+  Future<bool> _onBackPressed() {
+    return widget.toggleView();
   }
 }
