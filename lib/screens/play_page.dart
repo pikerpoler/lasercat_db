@@ -15,8 +15,6 @@ import 'package:lasercat_db/services/auth.dart';
 import 'package:lasercat_db/services/messeges.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-
-
 class CameraPage extends StatefulWidget {
   CameraPage({Key key}) : super(key: key);
 
@@ -69,7 +67,7 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
   void cameraHandler()async {
     ip=await getIP();
     setState(() {
-      url="http://"+ip+":8080";
+      url="http://"+ip+":8081";
     });
   }
 
@@ -255,10 +253,11 @@ class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateM
               )
               :new Expanded(
                 child: Container(
-                  child: WebView(initialUrl: url,
-                  ) //camera_widget()// videoRenderers(), CallSample() //
-                ),
-              ),
+                  child: WebView(
+                    initialUrl: url,
+                    javascriptMode: JavascriptMode.unrestricted,
+                  )
+                ),),
               ToggleButtons(
                 key: key,
                 children: <Widget>[
