@@ -23,7 +23,7 @@ class CameraPage extends StatefulWidget {
 }
 
 const String RANDOM ="SQUARE", CIRCLE = "CIRCLE", STAR = "STAR"; // change "SQUARE" to "RANDOM"
-const int D_TIME=5;
+const int D_TIME=6;
 
 class _CameraPageState extends State<CameraPage> with SingleTickerProviderStateMixin{
   // initialized for widget
